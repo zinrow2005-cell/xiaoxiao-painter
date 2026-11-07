@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#fff5da" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>小小畫家學習樂園 V1.8.72｜佩佩豬・妙妙犬布麗專區</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="./styles.bundle.css?v=1.8.65" />
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn" id="homeBtn" aria-label="首頁"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/home.svg" alt="" aria-hidden="true"></button>
+    <div class="brand">
+      <h1><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/palette.svg" alt="" aria-hidden="true"> 小小畫家學習樂園</h1>
+      <div class="version">V1.8.72｜佩佩豬・妙妙犬布麗專區</div>
+    </div>
+    <div class="top-actions">
+      <button class="star-badge" id="starBadge" aria-label="獎勵星星">⭐ <b id="starCount">0</b></button>
+      <button class="icon-btn" id="galleryBtn" aria-label="我的作品"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/gallery.svg" alt="" aria-hidden="true"></button>
+      <button class="icon-btn parent-entry" id="parentBtn" aria-label="家長模式，長按開啟"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/lock.svg" alt="" aria-hidden="true"></button>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="view active home-view">
+      <div class="hero home-hero">
+        <div class="hero-copy">
+          <div class="eyebrow paint-tag">小小畫家・創意樂園</div>
+          <h2><span>今天想畫</span><span>什麼呢？</span></h2>
+          <p>選一張喜歡的圖案，拿起畫筆開始創作！</p>
+          <div class="hero-cta-row"><button id="heroStartBtn" type="button" class="hero-start-btn"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/palette.svg" alt="" aria-hidden="true"> 開始畫畫</button><button id="heroBrowseBtn" type="button" class="hero-browse-btn">看看所有圖案</button></div>
+          <div class="hero-pill-row">
+            <span class="hero-pill">200 組圖案</span>
+            <span class="hero-pill">黑白著色與彩色參考</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img src="./assets/ui/home-hero-art.png" alt="小朋友開心畫畫的首頁插圖" />
+        </div>
+      </div>
+
+
+      <div class="v1826-welcome" role="img" aria-label="歡迎來到小小畫家，彩色蠟筆與可愛動物一起畫畫"></div>
+      <div class="v1826-portal" aria-label="畫畫樂園入口">
+        <button id="v1826Start" type="button" class="v1826-tile v1826-tile-start" aria-label="開始畫畫，先選擇喜歡的圖案"><span class="sr-only">開始畫畫，先選圖</span></button>
+        <button id="v1826Sample" type="button" class="v1826-tile v1826-tile-sample" aria-label="看整張樣板"><span class="sr-only">看整張樣板</span></button>
+        <button id="v1826Random" type="button" class="v1826-tile v1826-tile-random" aria-label="隨機出題"><span class="sr-only">隨機出題</span></button>
+        <button id="v1826Library" type="button" class="v1826-tile v1826-tile-library" aria-label="圖庫分類"><span class="sr-only">圖庫分類</span></button>
+        <button id="v1826Works" type="button" class="v1826-tile v1826-tile-works" aria-label="我的作品"><span class="sr-only">我的作品</span></button>
+      </div>
+      <div class="sample-banner home-feature-grid">
+        <div class="sample-banner-text feature-card info-card">
+          <div class="feature-card-media"><img src="./assets/ui/home-feature-card.png" alt="教材卡片示意" /></div>
+          <div class="feature-card-copy">
+            <div class="eyebrow">創作小幫手</div>
+            <strong>畫畫、著色都好玩</strong>
+            <small>想看範例、隨機挑戰，或選擇黑白和彩色圖案，都可以在這裡快速切換。</small>
+          </div>
+        </div>
+        <div class="sample-banner-actions feature-action-wrap">
+          <button id="openStyleBoardBtn" class="primary-btn feature-action warm"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/gallery.svg" alt="" aria-hidden="true"> <span>看整張樣板</span></button>
+          <button id="homeRandomBtn" class="primary-btn random-btn feature-action cool"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/dice.svg" alt="" aria-hidden="true"> <span>隨機出題</span></button>
+        </div>
+        <div class="guide-style-switch home-guide-style feature-card mode-card">
+          <div class="guide-style-label">圖案模式</div>
+          <div class="segmented guide-style-tabs compact">
+            <button class="seg guide-style-btn" data-guide-style="outline">⚪ 黑白線稿</button>
+            <button class="seg guide-style-btn" data-guide-style="color">🌈 彩色底圖</button>
+          </div>
+          <small id="guideStyleHintHome">目前預設是彩色底圖，方便參考顏色；進入畫板後也能再切換成黑白線稿。</small>
+        </div>
+      </div>
+
+      <div class="section-title paint-title v1826-level-heading">選擇畫畫難度 <small>先從適合自己的程度開始</small></div>
+      <div class="v1827-tier-grid" id="v1827TierGrid" role="group" aria-label="快速選擇難度">
+        <button type="button" class="v1827-tier" data-start-lv="1" aria-pressed="false"><span class="v1827-tier-mark">★</span><img src="./assets/ui/v1857/duck3.webp" alt="" onerror="this.style.visibility='hidden'"><strong>入門</strong><small>LV1～2</small></button>
+        <button type="button" class="v1827-tier" data-start-lv="3" aria-pressed="false"><span class="v1827-tier-mark">★★</span><img src="./assets/ui/v1857/car3.webp" alt="" onerror="this.style.visibility='hidden'"><strong>基礎</strong><small>LV3～5</small></button>
+        <button type="button" class="v1827-tier" data-start-lv="6" aria-pressed="false"><span class="v1827-tier-mark">★★★</span><img src="./assets/ui/v1857/house8.webp" alt="" onerror="this.style.visibility='hidden'"><strong>進階</strong><small>LV6～8</small></button>
+        <button type="button" class="v1827-tier" data-start-lv="9" aria-pressed="false"><span class="v1827-tier-mark">★★★★</span><img src="./assets/ui/v1857/farm10.webp" alt="" onerror="this.style.visibility='hidden'"><strong>挑戰</strong><small>LV9～10</small></button>
+      </div>
+      <div class="v1827-level-actions"><span id="v1827LevelStatus" aria-live="polite">目前顯示全部難度</span><button id="v1827AllLevels" type="button" class="soft-btn">全部圖案</button></div>
+      <details class="v1827-exact-levels" id="v1827ExactLevels"><summary>進階設定：依 LV1～LV10 精確挑選</summary><div id="levelGrid" class="level-grid"></div></details>
+
+      <div class="v1833-audit-entry"><a href="./動漫圖庫載入驗收.html" class="soft-btn" aria-label="開啟動漫圖庫載入驗收">🖼️ 動漫圖庫驗收</a> <a href="./系統驗收_V1835.html" class="soft-btn" aria-label="開啟家長系統驗收頁面">🔎 家長系統驗收</a><small>開啟後可檢查圖庫、網路與裝置環境，不會修改孩子的作品。</small></div>
+      <section class="anime-entry" aria-labelledby="animeEntryTitle">
+        <div class="anime-entry-copy">
+          <span class="anime-entry-eyebrow">動漫遊戲 · 目前 4 個系列</span>
+          <h2 id="animeEntryTitle">動漫遊戲繪圖區</h2>
+          <p>果燃很派・鬼滅之刃・佩佩豬・妙妙犬布麗｜彩色參考、黑白著色與自由繪畫。</p>
+          <button type="button" id="openAnimeGalleryBtn" class="primary-btn">進入動漫遊戲系列 →</button>
+          <button type="button" id="openDemonGalleryBtn" class="primary-btn demon-entry-button">進入鬼滅之刃專區 →</button>
+          <button type="button" id="openPeppaGalleryBtn" class="primary-btn demon-entry-button">🐷 佩佩豬專區 →</button>
+          <button type="button" id="openBlueyGalleryBtn" class="primary-btn demon-entry-button">🐶 妙妙犬布麗專區 →</button><small>果燃很派使用外觀描述名稱；鬼滅之刃角色以 PDF 標示名稱整理。</small>
+        </div>
+        <div class="anime-entry-pictures" aria-hidden="true">
+          <img src="./assets/guides-color-clean/guoran01.png" alt="">
+          <img src="./assets/guides-color-clean/demon01.png" alt="">
+          <img src="./assets/guides-color-clean/peppa01.png" alt="">
+          <img src="./assets/guides-color-clean/bluey01.png" alt="">
+        </div>
+      </section>
+      <div class="section-title paint-title">主題分類</div>
+      <div id="categoryGrid" class="category-grid"></div>
+      <div id="categoryShowcase" class="category-showcase"></div>
+
+      <div class="library-head">
+        <div>
+          <div class="section-title paint-title">圖案庫</div>
+          <div id="filterHint" class="muted">全部圖案</div>
+        </div>
+        <button id="resetFilterBtn" class="soft-btn">顯示全部</button>
+      </div>
+      <div id="templateGrid" class="template-grid"></div>
+    </section>
+
+
+    <section id="categoryView" class="view category-view">
+      <div class="category-page-hero category-art-hero">
+        <button id="backFromCategoryBtn" class="soft-btn category-back">← 全部主題</button>
+        <div class="category-page-main">
+          <div id="categoryPageEmoji" class="category-page-emoji">🐯</div>
+          <div class="category-page-copy">
+            <div class="eyebrow paint-tag category-tag">主題學習館</div>
+            <h2 id="categoryPageTitle">陸地動物</h2>
+            <p id="categoryPageDescription">選一張喜歡的圖案開始畫畫吧！</p>
+            <div class="category-page-stats">
+              <span><b id="categoryPageCount">0</b> 張教材</span>
+              <span><b id="categoryPageDone">0</b> 張完成</span>
+            </div>
+          </div>
+          <div class="category-progress-card" aria-label="主題學習進度">
+            <div class="category-progress-ring" id="categoryProgressRing"><span id="categoryProgressPercent">0%</span></div>
+            <div>
+              <strong>我的完成度</strong>
+              <small id="categoryProgressLabel">從第一張開始挑戰吧！</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section id="gameArtSeriesToolbar" class="game-art-toolbar" aria-label="動漫遊戲系列" hidden>
+        <div class="game-art-toolbar-heading">
+          <div><strong>選擇遊戲系列</strong><small id="gameArtSeriesDescription">6 組角色・彩色與黑白</small></div>
+          <div id="gameArtSeriesTabs" class="game-art-series-tabs" role="group" aria-label="遊戲系列選擇"></div>
+        </div>
+        <div class="game-print-shortcut"><a id="gameSeriesQualityLink" href="./anime-quality-v1847.html" class="game-print-link">放大校對黑白／彩色角色圖</a><small>可疊合檢查角色輪廓與圖片邊距</small></div>
+        <div class="game-print-shortcut"><a id="gameSeriesPrintLink" href="./anime-print-v1844.html" class="game-print-link">A4 列印角色圖・黑白／彩色／對照</a><small>各角色獨立成頁，完整保留圖案</small></div>
+        <div class="game-preview-controls" role="group" aria-label="選圖預覽模式">
+          <span>先看哪一種？</span>
+          <button type="button" class="game-preview-mode" data-game-preview="outline" aria-pressed="false">黑白線稿</button>
+          <button type="button" class="game-preview-mode" data-game-preview="color" aria-pressed="false">彩色參考</button>
+          <button type="button" class="game-preview-mode" data-game-preview="free" aria-pressed="false">自由繪畫</button>
+        </div>
+      </section>
+      <div class="category-page-toolbar">
+        <div>
+          <div class="section-title category-subtitle">選擇難度</div>
+          <div id="categoryLevelChips" class="category-level-chips"></div>
+        </div>
+        <div class="category-toolbar-actions">
+          <button id="categoryRandomBtn" class="primary-btn random-btn"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/dice.svg" alt="" aria-hidden="true"> 隨機一張</button>
+          <button id="categoryClearLevelBtn" class="soft-btn">顯示全部難度</button>
+        </div>
+      </div>
+
+      <!-- V1.8.22: searchable, accessible, small-screen first filtering -->
+      <div class="v1822-findbar" role="search" aria-label="搜尋分類圖案">
+        <label for="categorySearchInput" class="v1822-searchlabel">找一張喜歡的圖</label>
+        <div class="v1822-searchfield">
+          <span aria-hidden="true">⌕</span>
+          <input id="categorySearchInput" type="search" inputmode="search" maxlength="40" autocomplete="off" placeholder="輸入中文或英文名稱，例如：熊貓、panda" aria-controls="categoryTemplateGrid">
+          <button id="categorySearchClear" type="button" class="v1822-clear" aria-label="清除搜尋">清除</button>
+        </div>
+        <div class="v1822-status" role="group" aria-label="作品進度篩選">
+          <button class="v1822-status-btn active" type="button" data-progress-filter="all" aria-pressed="true">全部圖案</button>
+          <button class="v1822-status-btn" type="button" data-progress-filter="todo" aria-pressed="false">還沒畫過</button>
+          <button class="v1822-status-btn" type="button" data-progress-filter="done" aria-pressed="false">已完成</button>
+        </div>
+      </div>
+      <div id="categoryProgressText" class="category-progress-text"></div>
+      <div id="categoryTemplateGrid" class="template-grid category-template-grid"></div>
+    </section>
+
+    <section id="drawView" class="view">
+      <div class="draw-hero-banner">
+        <div class="draw-hero-copy">
+          <div class="eyebrow paint-tag draw-tag">開始創作吧！</div>
+          <h2>我的小畫室</h2>
+          <p>選顏色、拿起筆，開始畫畫吧！</p>
+        </div>
+        <div class="draw-hero-stickers">
+          <span>畫畫</span><span>著色</span><span>收藏作品</span>
+        </div>
+      </div>
+      <div class="draw-layout">
+        <div class="workspace-card">
+          <div id="gameDrawingModes" class="game-drawing-modes" hidden role="group" aria-label="動漫遊戲繪畫模式">
+            <strong>動漫遊戲・繪畫方式</strong>
+            <div class="game-drawing-modes-buttons">
+              <button type="button" data-game-draw="outline" aria-pressed="false">黑白著色</button>
+              <button type="button" data-game-draw="color" aria-pressed="false">彩色參考</button>
+              <button type="button" data-game-draw="free" aria-pressed="false">自由繪畫</button>
+            </div>
+            <small id="gameModeHelp" role="status" aria-live="polite">選擇模式後即可開始畫畫，已畫圖層不會被清除。</small>
+          </div>
+          <div class="workspace-head">
+            <div>
+              <div id="drawLevel" class="pill">LV1</div>
+              <h2 id="drawTitle">蘋果 Apple</h2>
+            </div>
+            <div class="workspace-actions">
+              <button id="drawFullscreenBtn" class="soft-btn fullscreen-draw-btn" type="button" aria-pressed="false">⛶ 全螢幕畫板</button>
+              <button id="toggleGuideBtn" class="soft-btn">👁️ 底圖 15%</button>
+              <button id="clearBtn" class="danger-soft">清除此層</button>
+            </div>
+          </div>
+
+          <div id="focusLearningBar" class="focus-learning-bar" hidden aria-label="全螢幕學習模式切換">
+            <div class="focus-mode-tabs" role="tablist" aria-label="畫畫與寫字">
+              <button class="focus-mode-btn active" type="button" data-focus-pane="draw" role="tab" aria-selected="true">🎨 <span>畫畫</span></button>
+              <button class="focus-mode-btn" type="button" data-focus-pane="practice" role="tab" aria-selected="false">✍️ <span>寫字</span></button>
+            </div>
+            <div class="focus-current-word" aria-live="polite">
+              <span id="focusCurrentEmoji">🍎</span>
+              <strong id="focusCurrentWord">蘋果・APPLE</strong>
+            </div>
+            <div class="focus-template-nav" aria-label="全螢幕切換圖案">
+              <button id="focusPrevTemplateBtn" class="focus-mini-nav-btn" type="button">← 上一張</button>
+              <button id="focusNextTemplateBtn" class="focus-mini-nav-btn" type="button">下一張 →</button>
+            </div>
+            <button id="focusExitBtn" class="focus-exit-btn" type="button" aria-label="離開全螢幕畫板">✕ 離開</button>
+          </div>
+
+          <div id="focusLearningPanel" class="focus-learning-panel" hidden>
+            <div id="focusLearningHost" class="focus-learning-host"></div>
+          </div>
+
+          <div class="compact-draw-tools" aria-label="畫板設定工具列">
+            <details id="guideCompactPanel" class="compact-tool-panel">
+              <summary><span class="compact-tool-title"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/gallery.svg" alt="" aria-hidden="true"> 圖案／底圖</span><span id="guideCompactSummary" class="compact-tool-summary">彩色・15%</span></summary>
+              <div class="compact-tool-body">
+                <div class="guide-style-panel" aria-label="圖案樣式與底圖透明度">
+            <div class="guide-style-copy">
+              <div class="guide-style-title">圖案樣式選擇</div>
+              <div class="guide-style-note" id="guideStyleNote">可切換成彩色底圖或黑白線稿，底圖透明度可自行調整。</div>
+            </div>
+            <div class="guide-controls">
+              <div class="segmented guide-style-tabs">
+                <button class="seg guide-style-btn" data-guide-style="outline">⚪ 黑白線稿</button>
+                <button class="seg guide-style-btn" data-guide-style="color">🌈 彩色底圖</button>
+              </div>
+              <label class="outline-pin-control" for="lockOutlineTopToggle">
+                <span class="outline-pin-icon" aria-hidden="true">✒</span>
+                <span class="outline-pin-label"><strong>固定黑白圖的線條</strong><small id="outlinePinNote">獨立頂層鎖定黑色輪廓；底圖透明度設為 0% 也不會消失。</small></span>
+                <input type="checkbox" id="lockOutlineTopToggle" checked aria-describedby="outlinePinNote" />
+              </label>
+              <div class="outline-pin-status" id="outlinePinStatus" aria-live="polite">選擇黑白線稿後自動固定</div>
+              <a href="./線稿固定驗收_V1850.html" target="_blank" rel="noopener" class="outline-test-link">開啟線條固定測試（可直接塗色驗證）</a>
+              <div class="guide-opacity-control">
+                <div class="guide-opacity-head"><span>👁️ 底圖透明度</span><output id="guideOpacityValue" for="guideOpacityRange">15%</output></div>
+                <input id="guideOpacityRange" type="range" min="0" max="100" step="5" value="15" aria-label="底圖透明度" />
+                <div class="guide-opacity-scale"><span>隱藏 0%</span><span>預設 15%</span><span>清楚 100%</span></div>
+              </div>
+            </div>
+                </div>
+              </div>
+            </details>
+
+            <details id="layerCompactPanel" class="compact-tool-panel">
+              <summary><span class="compact-tool-title"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/layers.svg" alt="" aria-hidden="true"> 圖層</span><span id="layerCompactSummary" class="compact-tool-summary">描線・3 層</span></summary>
+              <div class="compact-tool-body">
+                <div class="layer-panel layer-manager" aria-label="繪圖圖層管理">
+            <div class="layer-manager-head">
+              <div>
+                <span class="layer-label">圖層</span>
+                <small class="layer-manager-hint">點縮圖切換圖層；可新增圖層，最多 8 層。</small>
+              </div>
+              <button id="addLayerBtn" class="layer-add-btn" type="button">＋ 新增圖層</button>
+            </div>
+            <div id="layerCards" class="layer-card-strip" aria-label="圖層縮圖列表"></div>
+            <div class="layer-selected-bar" aria-label="目前圖層操作">
+              <strong id="activeLayerName">✏️ 描線</strong>
+              <div class="layer-selected-actions">
+                <button id="layerEyeBtn" class="layer-mini-btn" type="button" title="顯示或隱藏目前圖層">👁️ 顯示</button>
+                <button id="layerLockBtn" class="layer-mini-btn" type="button" title="鎖定或解鎖目前圖層">🔓 未鎖定</button>
+                <button id="layerRenameBtn" class="layer-mini-btn" type="button" title="重新命名自訂圖層">✏️ 名稱</button>
+                <button id="layerMoveDownBtn" class="layer-mini-btn" type="button" title="移到下一層（更下方）">↓ 下層</button>
+                <button id="layerMoveUpBtn" class="layer-mini-btn" type="button" title="移到上一層（更上方）">↑ 上層</button>
+                <button id="layerDuplicateBtn" class="layer-mini-btn" type="button" title="複製目前圖層與內容">📄 複製</button>
+                <button id="layerDeleteBtn" class="layer-mini-btn danger" type="button" title="刪除自訂圖層">🗑️ 刪除</button>
+              </div>
+              <label class="layer-opacity-control" for="layerOpacityRange">
+                <span>圖層透明度 <b id="layerOpacityValue">100%</b></span>
+                <input id="layerOpacityRange" type="range" min="10" max="100" step="5" value="100" />
+              </label>
+            </div>
+                </div>
+
+              </div>
+            </details>
+          </div>
+
+          <div class="v1830-tool-heading"><strong>我的畫具</strong><button id="v1830ToggleQuickTools" type="button" aria-controls="drawQuickTools" aria-expanded="true">收合工具 <span aria-hidden="true">⌃</span></button></div>
+          <!-- V1.8.21: mobile quick tools proxy the original tool buttons; no duplicated draw state -->
+          <nav id="drawQuickTools" class="draw-quick-tools" aria-label="手機常用繪畫工具">
+            <button type="button" class="draw-quick-btn active" data-quick-tool="pencil" aria-pressed="true"><img src="./assets/ui/v1826/pencil.webp" alt=""><span>鉛筆</span></button>
+            <button type="button" class="draw-quick-btn" data-quick-tool="crayon" aria-pressed="false"><img src="./assets/ui/v1826/crayon.webp" alt=""><span>蠟筆</span></button>
+            <button type="button" class="draw-quick-btn" data-quick-tool="eraser" aria-pressed="false"><img src="./assets/ui/v1826/eraser.webp" alt=""><span>橡皮擦</span></button>
+            <button type="button" class="draw-quick-btn" id="quickPaletteBtn" aria-expanded="false"><img src="./assets/ui/crayon-icons/palette.svg" alt=""><span>顏色／畫具</span></button>
+            <button type="button" class="draw-quick-btn" id="quickBrushBtn" aria-expanded="false"><img src="./assets/ui/v1826/brush.webp" alt=""><span>粗細</span></button>
+          </nav>
+          <!-- V1.8.30: compact colors proxy original palette selection, no second color state -->
+          <div id="v1829QuickColors" class="v1829-quick-colors" aria-label="手機快速選色">
+            <span class="v1829-colors-label">🎨 顏色</span>
+            <div id="v1829ColorStrip" class="v1829-color-strip" role="group" aria-label="常用顏色"></div>
+            <button type="button" id="v1829MoreColors" class="v1829-more-colors" aria-label="開啟完整調色盤">更多＋</button>
+          </div>
+          <div id="v1830PaletteBackdrop" class="v1830-palette-backdrop" aria-hidden="true"></div>
+          <div class="canvas-stage">
+            <aside id="paletteDock" class="palette-dock" aria-label="畫具與調色盤">
+              <button id="paletteToggleBtn" class="palette-toggle" aria-label="收合畫具與調色盤" aria-expanded="true"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/palette.svg" alt="" aria-hidden="true"><span>收合</span></button>
+              <div id="paletteBody" class="palette-body">
+                <div class="palette-section-title">畫具</div>
+                <div class="tool-group expanded-tools palette-tools" id="toolGroup">
+                  <button class="tool-btn active" data-tool="pencil"><img class="ui-crayon-icon" src="./assets/ui/v1826/pencil.webp" alt="" aria-hidden="true"><span>鉛筆</span></button>
+                  <button class="tool-btn" data-tool="crayon"><img class="ui-crayon-icon" src="./assets/ui/v1826/crayon.webp" alt="" aria-hidden="true"><span>蠟筆</span></button>
+                  <button class="tool-btn" data-tool="brush"><img class="ui-crayon-icon" src="./assets/ui/v1826/brush.webp" alt="" aria-hidden="true"><span>畫筆</span></button>
+                  <button class="tool-btn" data-tool="watercolor"><img class="ui-crayon-icon" src="./assets/ui/v1826/watercolor.webp" alt="" aria-hidden="true"><span>水彩筆</span></button>
+                  <button class="tool-btn" data-tool="marker"><img class="ui-crayon-icon" src="./assets/ui/v1826/marker.webp" alt="" aria-hidden="true"><span>色筆</span></button>
+                  <button class="tool-btn" data-tool="airbrush"><img class="ui-crayon-icon" src="./assets/ui/v1826/airbrush.webp" alt="" aria-hidden="true"><span>噴筆</span></button>
+                  <button class="tool-btn palette-eraser" data-tool="eraser"><img class="ui-crayon-icon" src="./assets/ui/v1826/eraser.webp" alt="" aria-hidden="true"><span>橡皮擦</span></button>
+                </div>
+                <div class="palette-divider"></div>
+                <section class="palette-reference-v1852" aria-label="底圖樣式快速切換">
+                  <div class="palette-section-title">圖案樣式</div>
+                  <div class="palette-reference-actions" role="group" aria-label="黑白圖與彩色圖">
+                    <button type="button" class="guide-style-btn palette-reference-btn" data-guide-style="outline">黑白圖</button>
+                    <button type="button" class="guide-style-btn palette-reference-btn" data-guide-style="color">彩色圖</button>
+                  </div>
+                  <small class="palette-reference-tip">切換不會清除已畫的顏色；黑白圖可固定線條。</small>
+                </section>
+                <div class="palette-divider"></div>
+                <details id="paletteBrushDetails" class="palette-brush-details">
+                  <summary class="palette-brush-summary"><span>✏️ 筆觸設定</span><span class="palette-brush-summary-note">粗細・透明度</span></summary>
+            <div class="brush-control-panel">
+              <div class="size-row brush-size-row">
+                <span>粗細</span>
+                <button class="size-btn" data-size="3" aria-label="極細">•</button>
+                <button class="size-btn" data-size="5" aria-label="細">●</button>
+                <button class="size-btn active" data-size="8" aria-label="中細">●</button>
+                <button class="size-btn" data-size="14" aria-label="中">●</button>
+                <button class="size-btn" data-size="22" aria-label="粗">●</button>
+                <button class="size-btn" data-size="34" aria-label="特粗">●</button>
+              </div>
+              <label class="opacity-control" for="brushOpacityInput">
+                <span>透明度 <b id="brushOpacityValue">100%</b></span>
+                <input id="brushOpacityInput" type="range" min="15" max="100" value="100" step="5" />
+              </label>
+              <span class="pen-hint" id="penHint">✏️ 鉛筆：輕壓細淡、重壓較深，帶紙面顆粒</span>
+            </div>
+                </details>
+                <div class="palette-divider"></div>
+                <div class="palette-section-title">調色盤</div>
+                <div id="currentColorSwatch" class="current-color-swatch" aria-label="目前顏色"></div>
+                <div id="colorRow" class="color-row palette-colors"></div>
+                <div id="customColorSection" class="custom-color-section" hidden>
+                  <div class="custom-color-head"><span>我的顏色</span><button id="clearCustomColorsBtn" class="clear-custom-colors-btn" type="button">清除</button></div>
+                  <div id="customColorRow" class="color-row custom-color-row"></div>
+                </div>
+                <div class="palette-color-tip">點彩虹 ＋ 可新增自己的快速顏色</div>
+              </div>
+            </aside>
+            <div id="canvasWrap" class="canvas-wrap">
+              <canvas id="guideCanvas"></canvas>
+              <canvas id="outlineTopCanvas" aria-hidden="true"></canvas>
+              <canvas id="drawCanvas1" class="draw-layer active-layer"></canvas>
+              <canvas id="drawCanvas2" class="draw-layer"></canvas>
+              <canvas id="drawCanvas3" class="draw-layer"></canvas>
+              <img id="lockedInkImage" class="locked-ink-image" alt="" aria-hidden="true" hidden />
+              <div id="eraserCursor" class="eraser-cursor" aria-hidden="true"><span>擦拭範圍</span></div>
+            </div>
+          </div>
+
+          <div class="v1823-picker-return"><button id="backToPickerBtn" type="button" class="soft-btn v1823-back-btn">← 返回選圖</button><span class="v1823-context-label">繼續上一張或挑選下一張作品</span></div>
+          <div class="quick-template-nav" aria-label="快速切換教材">
+            <button id="prevTemplateBtn" class="soft-btn">← 上一張</button>
+            <div class="quick-template-status">
+              <span id="templatePositionText">1 / 200</span>
+              <small id="templatePoolText">全部教材</small>
+            </div>
+            <button id="randomTemplateBtn" class="primary-btn random-btn"><img class="ui-crayon-icon" src="./assets/ui/crayon-icons/dice.svg" alt="" aria-hidden="true"> 隨機</button>
+            <button id="nextTemplateBtn" class="soft-btn">下一張 →</button>
+          </div>
+
+          <div class="toolbar" aria-label="繪圖工具">
+            <div class="brush-realism-note">畫具已移到左側調色盤。可選擇粗細與透明度，再用喜歡的顏色自由創作。</div>
+            <button id="fullscreenBrushToggle" class="fullscreen-brush-toggle" type="button" aria-expanded="false">🖌️ 筆觸</button>
+            <button id="fullscreenPaletteToggle" class="fullscreen-brush-toggle fullscreen-palette-toggle" type="button" aria-expanded="false"><img src="./assets/ui/crayon-icons/palette.svg" alt="" aria-hidden="true"> 調色盤</button>
+
+
+
+            <div class="action-row">
+              <button id="undoBtn" class="soft-btn">↶ 上一步</button>
+              <button id="redoBtn" class="soft-btn">↷ 下一步</button>
+              <button id="saveBtn" class="primary-btn">⭐ 完成並收藏</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="learn-card" id="learnCard">
+          <div id="learnPronunciationPanel" class="learn-pronunciation-panel">
+            <div class="learn-emoji" id="learnEmoji">🍎</div>
+            <div class="word-en" id="wordEn">APPLE</div>
+            <div class="phonetic" id="wordKK">[ˈæpəl]</div>
+            <div class="speak-row"><button id="speakEnBtn" class="speak-btn">🔊 English</button><button id="speakEnSlowBtn" class="speak-btn secondary">🐢 慢速</button></div>
+
+            <div class="divider"></div>
+
+            <div class="word-zh" id="wordZh">蘋果</div>
+            <div class="zhuyin" id="wordZhuyin">ㄆㄧㄣˊ ㄍㄨㄛˇ</div>
+            <div class="speak-row"><button id="speakZhBtn" class="speak-btn">🔊 中文</button><button id="speakZhCharBtn" class="speak-btn secondary">👆 逐字</button></div>
+          </div>
+
+          <div id="learnSamplePanel" class="learn-sample-panel">
+            <div class="divider"></div>
+            <div id="sampleRefBlock" class="sample-ref-block" hidden>
+              <div class="practice-title">🖼️ 樣板參考</div>
+              <img id="sampleRefImg" class="sample-ref-img" alt="樣板參考圖">
+              <div class="sample-ref-actions">
+                <button id="openCurrentSampleBtn" class="soft-btn full">看這張樣板</button>
+                <button id="openStyleBoardFromDrawBtn" class="soft-btn full">看整張樣板</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="learnPracticePanel" class="learn-practice-panel">
+            <div class="practice-title">✍️ 文字塗寫練習</div>
+            <div class="practice-note">切換英文／中文／注音時會清空上一個練習畫面；全螢幕時會依字數自動放大成適合書寫的大小。</div>
+            <div class="segmented practice-tabs">
+              <button class="seg active" data-practice="en">ABC 英文</button>
+              <button class="seg" data-practice="zh">中文字</button>
+              <button class="seg" data-practice="bpmf">ㄅㄆㄇ 注音</button>
+            </div>
+            <div id="practicePronunciationBar" class="practice-pronunciation-bar" hidden aria-label="寫字練習發音"></div>
+            <div class="practice-wrap">
+              <canvas id="practiceGuideCanvas"></canvas>
+              <canvas id="practiceCanvas"></canvas>
+            </div>
+            <div class="practice-actions">
+              <button id="practiceClearBtn" class="soft-btn">清除練習</button>
+              <button id="practiceGuideBtn" class="soft-btn">描字 → 仿寫</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="galleryView" class="view gallery-view">
+      <div class="gallery-hero">
+        <div class="gallery-hero-copy">
+          <div class="eyebrow paint-tag gallery-tag">我的作品小藝廊</div>
+          <h2>每完成一張，就留下今天的成長 🌟</h2>
+          <p>把畫過的作品收藏起來，慢慢看見自己的顏色、線條與想像力越來越豐富。</p>
+          <div class="gallery-summary" id="gallerySummary"></div>
+        </div>
+        <div class="gallery-hero-art" aria-hidden="true">
+          <span>🖍️</span><span>🎨</span><span>🖼️</span><span>⭐</span>
+        </div>
+        <button id="backFromGalleryBtn" class="soft-btn gallery-back">← 回圖案庫</button>
+      </div>
+      <div class="gallery-stat-grid" aria-label="作品統計">
+        <div class="gallery-stat-card"><span class="gallery-stat-icon">🖼️</span><div><b id="galleryWorksCount">0</b><small>收藏作品</small></div></div>
+        <div class="gallery-stat-card"><span class="gallery-stat-icon">🌱</span><div><b id="galleryLevelsCount">0</b><small>挑戰等級</small></div></div>
+        <div class="gallery-stat-card"><span class="gallery-stat-icon">⭐</span><div><b id="galleryStarsCount">0</b><small>累積星星</small></div></div>
+      </div>
+      <div class="gallery-section-head">
+        <div>
+          <div class="section-title paint-title">作品收藏牆</div>
+          <div class="muted">每一張作品都是孩子自己的創作紀錄。</div>
+        </div>
+      </div>
+      <section class="works-backup-card" aria-labelledby="worksBackupTitle">
+        <div><h3 id="worksBackupTitle">🧰 作品備份與還原</h3><p>備份包含完成圖片與可編輯圖層；可自行保存到 Google Drive。還原採合併新增，不覆蓋舊作品。</p></div>
+        <div class="works-backup-actions"><button id="exportWorksBackupBtn" class="primary-btn" type="button">⬇️ 匯出全部作品備份</button><button id="importWorksBackupBtn" class="soft-btn" type="button">⬆️ 選檔還原作品</button></div>
+        <input type="file" id="worksBackupFile" accept=".json,application/json" hidden aria-label="選擇小小畫家備份檔">
+        <p id="worksBackupStatus" class="works-backup-status" role="status" aria-live="polite">請妥善保存備份檔；它包含孩子的繪畫圖片。</p>
+      </section>
+      <div id="galleryGrid" class="gallery-grid"></div>
+      <div id="emptyGallery" class="empty-state gallery-empty">
+        <div class="gallery-empty-art">🎨🖍️✨</div>
+        <strong>還沒有收藏作品</strong>
+        <span>先挑一張喜歡的教材完成第一幅畫吧！</span>
+      </div>
+    </section>
+  </main>
+
+  <div id="rewardOverlay" class="reward-overlay" aria-hidden="true">
+    <div class="reward-card"><div class="reward-star">⭐</div><strong>完成一張！</strong><span id="rewardText">得到 1 顆星</span></div>
+  </div>
+
+  <div id="parentModal" class="modal" aria-hidden="true">
+    <div class="modal-card parent-card">
+      <div class="modal-head">
+        <div><div class="eyebrow">家長模式</div><h2>學習與操作設定</h2></div>
+        <button id="closeParentBtn" class="icon-btn small">✕</button>
+      </div>
+      <div class="parent-stats">
+        <div><b id="parentStars">0</b><span>累積星星</span></div>
+        <div><b id="parentWorks">0</b><span>收藏作品</span></div>
+        <div><b id="parentLevels">0</b><span>挑戰過等級</span></div>
+      </div>
+      <label class="setting-row"><span><b>防手掌誤觸</b><small>使用 Apple Pencil 後，短時間忽略手掌或手指誤碰。</small></span><input id="palmRejectToggle" type="checkbox" checked /></label>
+      <label class="setting-row"><span><b>Apple Pencil 壓力筆觸</b><small>依壓力與畫筆移動速度調整粗細，讓線條更自然。</small></span><input id="pressureToggle" type="checkbox" checked /></label>
+      <label class="setting-row setting-select-row"><span><b>Apple Pencil 筆壓感度</b><small>依孩子下筆力道選擇。柔和＝輕壓就有明顯變化；偏硬＝需要較用力。</small></span><select id="pressureCurveSelect"><option value="soft">柔和</option><option value="normal" selected>標準</option><option value="firm">偏硬</option></select></label>
+      <label class="setting-row"><span><b>完成作品播放鼓勵音</b><small>收藏作品後播放簡短中文鼓勵。</small></span><input id="rewardSoundToggle" type="checkbox" checked /></label>
+      <label class="setting-row"><span><b>完成作品動畫</b><small>收藏作品時顯示星星完成動畫。</small></span><input id="completionFxToggle" type="checkbox" checked /></label>
+      <div class="parent-note">🔒 長按右上角鎖頭約 1.2 秒可進入家長模式。已保留與實際操作有關的設定，並移除教學步驟相關干擾。</div>
+      <button id="closeParentBottomBtn" class="primary-btn full">完成設定</button>
+    </div>
+  </div>
+
+
+  <div id="sampleModal" class="modal" aria-hidden="true">
+    <div class="modal-card sample-modal-card">
+      <div class="modal-head">
+        <div><div class="eyebrow">教材樣板圖</div><h2 id="sampleModalTitle">統一教材風格參考</h2></div>
+        <button id="closeSampleBtn" class="icon-btn small">✕</button>
+      </div>
+      <img id="sampleModalImg" class="sample-modal-img" alt="教材樣板大圖">
+      <div class="parent-note">此圖為正式教材樣板；繪圖畫布的底圖透明度預設 15%，並可由使用者自行調整。</div>
+    </div>
+  </div>
+
+  <div id="colorWheelPopover" class="color-wheel-overlay" hidden aria-hidden="true">
+    <div class="color-wheel-card" role="dialog" aria-modal="true" aria-labelledby="colorWheelTitle">
+      <div class="color-wheel-head">
+        <div><div class="eyebrow">更多顏色</div><h2 id="colorWheelTitle">圓形顏色挑選盤</h2></div>
+        <button id="closeColorWheelBtn" class="icon-btn small" type="button" aria-label="關閉顏色挑選盤">✕</button>
+      </div>
+      <div class="color-wheel-main">
+        <div id="colorWheelShell" class="color-wheel-shell">
+          <canvas id="colorWheelCanvas" width="280" height="280" aria-label="圓形顏色挑選盤"></canvas>
+          <div id="colorWheelPointer" class="color-wheel-pointer" aria-hidden="true"></div>
+        </div>
+        <div class="color-wheel-side">
+          <div class="color-wheel-preview-row"><span id="colorWheelPreview" class="color-wheel-preview"></span><b id="colorWheelHex">#222222</b></div>
+          <div class="color-wheel-help direct-color-help">直接點選或拖曳圓盤：畫筆會立即使用你看到的顏色。往中心是較淡的顏色。</div>
+          <div class="color-wheel-actions">
+            <button id="saveWheelColorBtn" class="soft-btn full" type="button">☆ 收藏到我的顏色</button>
+            <button id="confirmColorWheelBtn" class="primary-btn full" type="button">✓ 完成</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- V1.8.24: shown only after a successful IndexedDB work save -->
+  <div id="savedNextModal" class="v1824-modal" hidden aria-hidden="true">
+    <section class="v1824-card" role="dialog" aria-modal="true" aria-labelledby="savedNextTitle" aria-describedby="savedNextDesc">
+      <div class="v1824-art" aria-hidden="true">⭐ 🖍️ ⭐</div>
+      <h2 id="savedNextTitle">作品收藏成功！</h2>
+      <p id="savedNextDesc">這幅畫已經放進「我的作品」。接下來想做什麼呢？</p>
+      <div class="v1824-actions">
+        <button id="savedNextNext" class="primary-btn" type="button">畫下一張 →</button>
+        <button id="savedNextRestart" class="soft-btn" type="button">↻ 再畫一次</button>
+        <button id="savedNextPicker" class="soft-btn" type="button">← 返回選圖</button>
+      </div>
+      <button id="savedNextStay" class="v1824-stay" type="button">留在這張作品</button>
+    </section>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="./lineart.js?v=1.7.90"></script>
+  <script src="./app.js?v=1.8.71"></script>
+  <script defer src="./ui-v1820.js?v=1.8.65"></script>
+  <script defer src="./anime-v1842.js?v=1.8.65"></script>
+  <script defer src="./ui-v1821.js?v=1.8.65"></script>
+  <script defer src="./ui-v1824.js?v=1.8.65"></script>
+  <script defer src="./ui-v1826.js?v=1.8.65"></script>
+  <script defer src="./ui-v1828.js?v=1.8.65"></script>
+  <script defer src="./ui-v1829.js?v=1.8.65"></script>
+  <script defer src="./ui-v1830.js?v=1.8.65"></script>
+  <script defer src="./ui-v1863.js?v=1.8.68"></script>
+<script defer src="./character-series-nav.js?v=1.8.65"></script>
+</body>
+</html>

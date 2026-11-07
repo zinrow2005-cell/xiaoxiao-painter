@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#fff7e5"><title>小小畫家｜家長互動驗收 V1.8.35</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#544331;background:#fff8e9}*{box-sizing:border-box}body{margin:0;padding:18px 12px}main{max-width:880px;margin:auto}h1{font-size:clamp(21px,4vw,30px);margin:0}h2{font-size:19px;margin:0 0 12px}p{line-height:1.7}.lead{color:#756957}.panel{padding:19px;margin:15px 0;border-radius:22px;background:#fff;border:2px solid #ecd9b8;box-shadow:0 5px 14px #b38b5420}.actions{display:flex;flex-wrap:wrap;gap:8px}button,a.btn{font:inherit;border:1px solid #d8ba84;border-radius:14px;padding:10px 14px;min-height:44px;color:#513e26;background:#ffdf98;text-decoration:none;font-weight:700;cursor:pointer}button.subtle,a.btn.subtle{background:#fffaf0}button:disabled{opacity:.5;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #5b9be2;outline-offset:2px}.result{padding:9px 0;border-top:1px solid #f0e7d8;display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:8px;font-size:14px}.pass{color:#176d48;font-weight:bold}.fail{color:#ac3434;font-weight:bold}.warn{color:#976018;font-weight:bold}.row{display:flex;align-items:center;gap:11px;flex-wrap:wrap}.muted{font-size:13px;color:#756957}.checkrow{display:flex;align-items:flex-start;gap:12px;border-top:1px solid #f0e7d8;padding:10px 2px;line-height:1.5}.checkrow input{width:22px;height:22px;flex:none;margin:0}.checkrow span{flex:1}.checkrow small{display:block;color:#806f5b}.stats{font-size:14px;font-weight:bold;color:#735633}.ink{border:2px dashed #d8b889;border-radius:14px;display:block;width:100%;height:215px;touch-action:none;background:#fff;cursor:crosshair}.hint{font-size:13px;color:#756957}.swatch{width:39px;height:39px;border:3px solid #fff;box-shadow:0 0 0 1px #bdad98;border-radius:50%;padding:0;min-height:0}.swatch.selected{box-shadow:0 0 0 3px #4c799f}.screen{max-width:100%;word-break:break-word}#printProof{display:none}@media(max-width:520px){.result{grid-template-columns:1fr;gap:3px}.panel{padding:14px}}@page{size:A4;margin:13mm}@media print{.no-print,header .actions,button,canvas,.checkrow input{display:none!important}body{background:white;color:black}.panel{border:1px solid #bbb;box-shadow:none;break-inside:avoid}#printProof{display:block;border:1px solid black;padding:20px;margin-top:25px;height:100mm}main{max-width:none}}
+</style></head><body><main>
+<header class="row" style="justify-content:space-between"><h1>🖍️ 小小畫家｜家長互動驗收</h1><div class="actions"><a class="btn subtle" href="./index.html">返回畫畫樂園</a></div></header>
+<p class="lead">V1.8.35｜這是獨立測試頁，不會更動正式作品資料庫。自動檢查只能核對功能環境；儲存、真機觸控與正式教材列印仍須由家長實際操作。</p>
+<section class="panel"><h2>① 自動檢查</h2><div class="actions no-print"><button id="run">重新檢查</button><button id="copy">複製報告</button><button id="export" class="subtle">下載驗收報告</button></div><p class="muted">基本檢查 Canvas、獨立測試 IndexedDB 的寫入／讀回／清理、PWA、核心檔案與 8 張抽樣圖片的實際解碼。全圖庫檢查可另外驗證 400 張教材。需要網路才可完整檢查資源；離線時也可執行部分項目。</p><div id="results" aria-live="polite">尚未執行。</div>
+<div class="gallery-audit" style="border-top:2px dashed #ead5ac;margin-top:16px;padding-top:14px">
+<h2>全部 400 張教材檢查</h2>
+<p class="muted">依據目前圖庫清單，逐張載入並解碼 200 張黑白、200 張彩色圖。每批最多 4 張，避免同時佔用過多記憶體；檢查需要下載圖片，手機使用行動網路時請注意流量。可隨時停止。</p>
+<div class="actions no-print"><button id="runAll" class="subtle">檢查全部 400 張</button><button id="stopAll" class="subtle" disabled>停止檢查</button></div>
+<progress id="galleryProgress" max="400" value="0" style="width:100%;height:15px;margin-top:12px" aria-label="教材圖片檢查進度"></progress>
+<p id="galleryStatus" class="stats" aria-live="polite">尚未執行全部教材檢查。</p><div id="galleryFailures" class="screen muted"></div>
+</div></section>
+<section class="panel"><h2>② 直接試畫（不儲存作品）</h2><p class="muted">請在手機上用手指畫三筆、選另一個顏色再畫；切換橫式也試一次。這個小畫布不會寫入「我的作品」。</p><canvas class="ink" id="draw" aria-label="觸控或滑鼠試畫區"></canvas><div class="row no-print" style="margin-top:11px"><button class="swatch selected" style="background:#e85155" data-color="#e85155" aria-label="紅色" title="紅色"></button><button class="swatch" style="background:#3c94e2" data-color="#3c94e2" aria-label="藍色" title="藍色"></button><button class="swatch" style="background:#4ba56b" data-color="#4ba56b" aria-label="綠色" title="綠色"></button><button id="clear" class="subtle">清空試畫</button></div><p id="strokeStats" class="stats" aria-live="polite">目前筆畫：0</p><p class="hint">本頁的試畫不等於正式畫板驗收，正式七種畫具仍要在主系統測試。</p></section>
+<section class="panel"><h2>③ 真正的功能驗收清單</h2><p class="muted">以下需你在正式系統操作後，親自勾選。清單只存在目前這個頁面，不會修改既有資料。</p><div id="manual"></div><p class="stats" id="manualStats">已完成 0 項</p><div class="actions no-print"><a class="btn" href="./index.html">開啟正式系統測試</a><button id="printTest" class="subtle">列印 A4 驗收頁</button></div><p class="hint">A4 按鈕只測這張驗收頁；正式教材列印必須回到主系統另外檢查，不能混為一談。</p></section>
+<div id="printProof"><h2>A4 版面測試</h2><p>這個框應完整出現在紙張內，不應裁切。</p><p>小小畫家 V1.8.35</p></div>
+</main>
+<script>
+'use strict';
+const checks=[];const result=document.getElementById('results');let strokes=0;let ink='#e85155';
+const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function add(name,status,detail){checks.push({name,status,detail});}
+async function requestAsset(path){let r=await fetch(path,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return r;}
+function writeReadTest(){return new Promise(resolve=>{
+ if(!window.indexedDB){resolve([false,'IndexedDB API 不存在']);return;}
+ const name='kids-drawing-audit-temporary-v1835-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+ let done=false,db=null;
+ function finish(ok,msg){if(done)return;done=true;try{if(db)db.close()}catch(e){};try{indexedDB.deleteDatabase(name)}catch(e){};resolve([ok,msg]);}
+ try{
+ const req=indexedDB.open(name,1);req.onupgradeneeded=()=>{req.result.createObjectStore('probe',{keyPath:'id'})};
+ req.onerror=()=>finish(false,'測試資料庫無法開啟');
+ req.onsuccess=()=>{db=req.result;try{const tx=db.transaction('probe','readwrite'),store=tx.objectStore('probe');store.add({id:'probe',text:'驗收測試'});tx.oncomplete=()=>{try{const read=db.transaction('probe','readonly').objectStore('probe').get('probe');read.onsuccess=()=>finish(read.result?.text==='驗收測試','測試資料寫入／讀回'+(read.result?.text==='驗收測試'?'成功':'內容不符'));read.onerror=()=>finish(false,'讀取失敗');}catch(e){finish(false,String(e))}};tx.onerror=()=>finish(false,'寫入交易失敗');}catch(e){finish(false,String(e))}};
+ }catch(e){finish(false,String(e))}
+ setTimeout(()=>finish(false,'檢查逾時；可能是私密瀏覽或儲存限制'),6000);
+ });}
+async function checkDecodedImage(path){const r=await requestAsset(path),blob=await r.blob();if(!blob.type.startsWith('image/'))throw Error('內容不是圖片');if('createImageBitmap'in window){let im=await createImageBitmap(blob);try{if(!im.width||!im.height)throw Error('圖片尺寸無效')}finally{im.close()}}else{await new Promise((yes,no)=>{let im=new Image;const u=URL.createObjectURL(blob);im.onload=()=>{URL.revokeObjectURL(u);im.naturalWidth&&im.naturalHeight?yes():no(Error('尺寸無效'))};im.onerror=()=>{URL.revokeObjectURL(u);no(Error('圖片解碼失敗'))};im.src=u})}}
+async function run(){checks.length=0;result.textContent='檢查中…';document.getElementById('run').disabled=true;
+ try{
+ add('安全網址',location.protocol==='https:'||location.hostname==='localhost'?'通過':'提醒',location.protocol+' / '+location.hostname);
+ add('Canvas 2D',document.createElement('canvas').getContext('2d')?'通過':'失敗','瀏覽器畫布功能');
+ const [dbok,dbinfo]=await writeReadTest();add('獨立測試資料庫',dbok?'通過':'失敗',dbinfo+'（測試資料庫使用獨立名稱，已要求刪除）');
+ add('觸控環境',navigator.maxTouchPoints>0?'通過':'提醒','可偵測觸控點 '+(navigator.maxTouchPoints||0)+'；仍須實際手指試畫');
+ add('Service Worker 支援','serviceWorker'in navigator?'通過':'提醒','PWA 離線功能支援狀態');
+ if('serviceWorker'in navigator){let reg=await navigator.serviceWorker.getRegistration().catch(()=>null);add('PWA 註冊',reg?'通過':'提醒',reg?'找到註冊（仍需離線實測）':'目前沒有註冊')}
+ for(const path of ['./index.html','./app.js','./styles.css','./sw.js','./manifest.webmanifest','./assets/ui/home-hero-art.png']){
+ try{await requestAsset(path);add('核心檔 '+path,'通過','可以讀取')}catch(e){add('核心檔 '+path,'失敗',String(e))}}
+ const samples=['duck3.png','car3.png','house8.png','farm10.png'];let ok=0,errors=[];
+ for(const kind of ['guides-color-clean','guides-outline-clean'])for(const f of samples){const p='./assets/'+kind+'/'+f;try{await checkDecodedImage(p);ok++}catch(e){errors.push(p+': '+String(e))}}
+ add('教材圖片解碼（8 張）',ok===8?'通過':'失敗',ok+'/8 張實際解碼'+(errors.length?'；'+errors.join('；'):''));
+ try{const r=await requestAsset('./VERSION.txt');const version=(await r.text()).trim();add('版本號',version==='V1.8.35'?'通過':'失敗',version)}catch(e){add('版本號','失敗',String(e))}
+ }catch(e){add('檢查執行','失敗',String(e))}
+ result.innerHTML=checks.map(c=>'<div class="result"><b>'+escapeHTML(c.name)+'</b><span><span class="'+(c.status==='通過'?'pass':c.status==='提醒'?'warn':'fail')+'">'+escapeHTML(c.status)+'</span>　'+escapeHTML(c.detail)+'</span></div>').join('');document.getElementById('run').disabled=false;}
+const tasks=[['開啟分類','能搜尋並開啟一張圖'],['畫具切換','正式畫板的鉛筆、蠟筆、水彩、色筆、噴筆、畫筆、橡皮擦可切換'],['顏色切換','快速選色與完整調色盤一致'],['工具收合','工具收合／展開後不遮住畫布'],['作品儲存','儲存後可在「我的作品」找到'],['作品重開','重新開啟網站，已儲存作品仍在'],['前後張與返回','下一張／上一張及返回原分類正常'],['螢幕方向','手機直式、橫式都能繪畫，旋轉後內容未消失'],['正式教材列印','從正式畫板列印 A4，圖片未被裁切']];
+const manual=document.getElementById('manual');tasks.forEach(([name,note],i)=>{const label=document.createElement('label');label.className='checkrow';const input=document.createElement('input');input.type='checkbox';input.dataset.idx=i;input.onchange=manualUpdate;const span=document.createElement('span');span.innerHTML='<b>'+escapeHTML(name)+'</b><small>'+escapeHTML(note)+'</small>';label.append(input,span);manual.append(label)});
+function manualUpdate(){document.getElementById('manualStats').textContent='已完成 '+manual.querySelectorAll('input:checked').length+' / '+tasks.length+' 項（人工確認）'}
+// V1.8.35: a separately initiated complete-gallery audit. No writes to the child's work DB.
+let galleryRunning=false,galleryStop=false;
+let galleryResult={status:'尚未執行',tested:0,total:400,passed:0,failed:[],started:null,completed:null};
+const galleryStatus=document.getElementById('galleryStatus');
+const galleryFailures=document.getElementById('galleryFailures');
+const galleryProgress=document.getElementById('galleryProgress');
+const galleryStart=document.getElementById('runAll');
+const galleryStopButton=document.getElementById('stopAll');
+function refreshGalleryAudit(){
+ galleryProgress.value=galleryResult.tested;
+ galleryStatus.textContent=galleryResult.status+'｜'+galleryResult.tested+'/'+galleryResult.total+' 張，成功 '+galleryResult.passed+'，失敗 '+galleryResult.failed.length;
+ galleryFailures.replaceChildren();
+ if(galleryResult.failed.length){
+  const title=document.createElement('b');title.textContent='未通過項目（最多顯示前 30 筆，完整資料請匯出報告）：';galleryFailures.append(title);
+  const ul=document.createElement('ul');for(const entry of galleryResult.failed.slice(0,30)){const li=document.createElement('li');li.textContent=entry.path+'：'+entry.error;ul.append(li)}galleryFailures.append(ul);
+ }
+}
+async function completeGalleryAudit(){
+ if(galleryRunning)return;
+ galleryRunning=true;galleryStop=false;galleryStart.disabled=true;galleryStopButton.disabled=false;
+ galleryResult={status:'檢查中',tested:0,total:400,passed:0,failed:[],started:new Date().toISOString(),completed:null};refreshGalleryAudit();
+ try{
+  const response=await requestAsset('./GALLERY_AUDIT.json');const audit=await response.json();
+  const ids=(audit.items||[]).map(entry=>entry.id).filter(Boolean);
+  if(ids.length!==200||new Set(ids).size!==200)throw Error('圖庫清單不是 200 組唯一 ID，已停止檢查');
+  const targets=[];for(const id of ids)for(const kind of ['guides-outline-clean','guides-color-clean'])targets.push('./assets/'+kind+'/'+encodeURIComponent(id)+'.png');
+  for(let start=0;start<targets.length;start+=4){
+   if(galleryStop)break;
+   const group=targets.slice(start,start+4);
+   const outcomes=await Promise.all(group.map(async path=>{try{await checkDecodedImage(path);return {path,ok:true}}catch(e){return {path,ok:false,error:String(e)}}}));
+   for(const item of outcomes){galleryResult.tested++;if(item.ok)galleryResult.passed++;else galleryResult.failed.push({path:item.path,error:item.error})}
+   refreshGalleryAudit();
+   // Yield to the UI between batches so mobile browsers can repaint and cancel.
+   await new Promise(resolve=>setTimeout(resolve,0));
+  }
+  galleryResult.status=galleryStop?'使用者停止':galleryResult.failed.length?'完成（有失敗）':'全部通過';
+ }catch(err){galleryResult.status='無法完成';galleryResult.failed.push({path:'GALLERY_AUDIT.json',error:String(err)})}
+ finally{galleryResult.completed=new Date().toISOString();galleryRunning=false;galleryStart.disabled=false;galleryStopButton.disabled=true;refreshGalleryAudit()}
+}
+galleryStart.onclick=completeGalleryAudit;
+galleryStopButton.onclick=()=>{galleryStop=true;galleryStopButton.disabled=true;galleryResult.status='正在停止'};
+
+const canvas=document.getElementById('draw');const ctx=canvas.getContext('2d');let drawing=false,last=null;
+function resize(){const old=canvas.width&&canvas.height?(()=>{const c=document.createElement('canvas');c.width=canvas.width;c.height=canvas.height;c.getContext('2d').drawImage(canvas,0,0);return c})():null;const bounds=canvas.getBoundingClientRect(),dpr=Math.max(1,Math.min(3,devicePixelRatio||1));canvas.width=Math.round(bounds.width*dpr);canvas.height=Math.round(bounds.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#fff';ctx.fillRect(0,0,bounds.width,bounds.height);if(old)ctx.drawImage(old,0,0,old.width,old.height,0,0,bounds.width,bounds.height)}
+function pos(e){const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
+canvas.addEventListener('pointerdown',e=>{e.preventDefault();drawing=true;last=pos(e);canvas.setPointerCapture(e.pointerId);strokes++;document.getElementById('strokeStats').textContent='目前筆畫：'+strokes;ctx.beginPath();ctx.arc(last.x,last.y,3.5,0,Math.PI*2);ctx.fillStyle=ink;ctx.fill()});
+canvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();let p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.strokeStyle=ink;ctx.lineWidth=7;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();last=p});
+function stop(){drawing=false;last=null}canvas.addEventListener('pointerup',stop);canvas.addEventListener('pointercancel',stop);canvas.addEventListener('lostpointercapture',stop);
+document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{ink=b.dataset.color;document.querySelectorAll('[data-color]').forEach(x=>x.classList.toggle('selected',x===b))});
+document.getElementById('clear').onclick=()=>{strokes=0;document.getElementById('strokeStats').textContent='目前筆畫：0';const r=canvas.getBoundingClientRect();ctx.fillStyle='#fff';ctx.fillRect(0,0,r.width,r.height)};
+function report(){return {app:'小小畫家',version:'V1.8.35',date:new Date().toISOString(),device:navigator.userAgent,results:checks,manual:tasks.map(([name,detail],i)=>({name,passed:manual.querySelectorAll('input')[i].checked})),demoStrokes:strokes,completeGalleryAudit:galleryResult,explanation:'人工勾選不代表自動功能測試；不含任何正式作品資料'}}
+document.getElementById('copy').onclick=async()=>{const t=JSON.stringify(report(),null,2);try{await navigator.clipboard.writeText(t);alert('驗收報告已複製')}catch(e){prompt('請手動複製報告',t)}};
+document.getElementById('export').onclick=()=>{const b=new Blob([JSON.stringify(report(),null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='小小畫家_V1835_裝置驗收報告.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)};
+document.getElementById('printTest').onclick=()=>window.print();document.getElementById('run').onclick=run;
+window.addEventListener('resize',()=>{if(!drawing)resize()});resize();manualUpdate();run();
+</script></body></html>

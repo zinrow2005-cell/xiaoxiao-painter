@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "小小畫家學習樂園 V1.8.61",
+  "short_name": "小小畫家",
+  "description": "兒童繪畫與動漫遊戲角色圖庫，包含鬼滅之刃21組彩色及黑白配對素材。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffaf0",
+  "theme_color": "#fff5da",
+  "orientation": "any",
+  "lang": "zh-TW",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

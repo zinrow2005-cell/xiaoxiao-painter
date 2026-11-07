@@ -1,0 +1,210 @@
+[
+  {
+    "id": "peppa01",
+    "series": "peppa",
+    "name": "佩佩豬",
+    "english": "Peppa Pig",
+    "color": "assets/guides-color-clean/peppa01.png",
+    "outline": "assets/guides-outline-clean/peppa01.png"
+  },
+  {
+    "id": "peppa02",
+    "series": "peppa",
+    "name": "喬治",
+    "english": "George Pig",
+    "color": "assets/guides-color-clean/peppa02.png",
+    "outline": "assets/guides-outline-clean/peppa02.png"
+  },
+  {
+    "id": "peppa03",
+    "series": "peppa",
+    "name": "豬爸爸",
+    "english": "Daddy Pig",
+    "color": "assets/guides-color-clean/peppa03.png",
+    "outline": "assets/guides-outline-clean/peppa03.png"
+  },
+  {
+    "id": "peppa04",
+    "series": "peppa",
+    "name": "豬媽媽",
+    "english": "Mummy Pig",
+    "color": "assets/guides-color-clean/peppa04.png",
+    "outline": "assets/guides-outline-clean/peppa04.png"
+  },
+  {
+    "id": "peppa05",
+    "series": "peppa",
+    "name": "豬爺爺",
+    "english": "Grandpa Pig",
+    "color": "assets/guides-color-clean/peppa05.png",
+    "outline": "assets/guides-outline-clean/peppa05.png"
+  },
+  {
+    "id": "peppa06",
+    "series": "peppa",
+    "name": "豬奶奶",
+    "english": "Granny Pig",
+    "color": "assets/guides-color-clean/peppa06.png",
+    "outline": "assets/guides-outline-clean/peppa06.png"
+  },
+  {
+    "id": "peppa07",
+    "series": "peppa",
+    "name": "蘇西羊",
+    "english": "Suzy Sheep",
+    "color": "assets/guides-color-clean/peppa07.png",
+    "outline": "assets/guides-outline-clean/peppa07.png"
+  },
+  {
+    "id": "peppa08",
+    "series": "peppa",
+    "name": "瑞貝卡兔子",
+    "english": "Rebecca Rabbit",
+    "color": "assets/guides-color-clean/peppa08.png",
+    "outline": "assets/guides-outline-clean/peppa08.png"
+  },
+  {
+    "id": "peppa09",
+    "series": "peppa",
+    "name": "柔伊斑馬",
+    "english": "Zoe Zebra",
+    "color": "assets/guides-color-clean/peppa09.png",
+    "outline": "assets/guides-outline-clean/peppa09.png"
+  },
+  {
+    "id": "peppa10",
+    "series": "peppa",
+    "name": "丹尼狗",
+    "english": "Danny Dog",
+    "color": "assets/guides-color-clean/peppa10.png",
+    "outline": "assets/guides-outline-clean/peppa10.png"
+  },
+  {
+    "id": "peppa11",
+    "series": "peppa",
+    "name": "弗雷迪狐狸",
+    "english": "Freddy Fox",
+    "color": "assets/guides-color-clean/peppa11.png",
+    "outline": "assets/guides-outline-clean/peppa11.png"
+  },
+  {
+    "id": "peppa12",
+    "series": "peppa",
+    "name": "坎迪貓咪",
+    "english": "Candy Cat",
+    "color": "assets/guides-color-clean/peppa12.png",
+    "outline": "assets/guides-outline-clean/peppa12.png"
+  },
+  {
+    "id": "peppa13",
+    "series": "peppa",
+    "name": "艾蜜莉大象",
+    "english": "Emily Elephant",
+    "color": "assets/guides-color-clean/peppa13.png",
+    "outline": "assets/guides-outline-clean/peppa13.png"
+  },
+  {
+    "id": "bluey01",
+    "series": "bluey",
+    "name": "布麗",
+    "english": "Bluey",
+    "color": "assets/guides-color-clean/bluey01.png",
+    "outline": "assets/guides-outline-clean/bluey01.png"
+  },
+  {
+    "id": "bluey02",
+    "series": "bluey",
+    "name": "賓果",
+    "english": "Bingo",
+    "color": "assets/guides-color-clean/bluey02.png",
+    "outline": "assets/guides-outline-clean/bluey02.png"
+  },
+  {
+    "id": "bluey03",
+    "series": "bluey",
+    "name": "班底",
+    "english": "Bandit",
+    "color": "assets/guides-color-clean/bluey03.png",
+    "outline": "assets/guides-outline-clean/bluey03.png"
+  },
+  {
+    "id": "bluey04",
+    "series": "bluey",
+    "name": "奇莉",
+    "english": "Chilli",
+    "color": "assets/guides-color-clean/bluey04.png",
+    "outline": "assets/guides-outline-clean/bluey04.png"
+  },
+  {
+    "id": "bluey05",
+    "series": "bluey",
+    "name": "麥肯錫",
+    "english": "Mackenzie",
+    "color": "assets/guides-color-clean/bluey05.png",
+    "outline": "assets/guides-outline-clean/bluey05.png"
+  },
+  {
+    "id": "bluey06",
+    "series": "bluey",
+    "name": "可可",
+    "english": "Coco",
+    "color": "assets/guides-color-clean/bluey06.png",
+    "outline": "assets/guides-outline-clean/bluey06.png"
+  },
+  {
+    "id": "bluey07",
+    "series": "bluey",
+    "name": "哈妮",
+    "english": "Honey",
+    "color": "assets/guides-color-clean/bluey07.png",
+    "outline": "assets/guides-outline-clean/bluey07.png"
+  },
+  {
+    "id": "bluey08",
+    "series": "bluey",
+    "name": "印蒂",
+    "english": "Indy",
+    "color": "assets/guides-color-clean/bluey08.png",
+    "outline": "assets/guides-outline-clean/bluey08.png"
+  },
+  {
+    "id": "bluey09",
+    "series": "bluey",
+    "name": "一家四口",
+    "english": "Family of Four",
+    "color": "assets/guides-color-clean/bluey09.png",
+    "outline": "assets/guides-outline-clean/bluey09.png"
+  },
+  {
+    "id": "bluey10",
+    "series": "bluey",
+    "name": "姐妹合照",
+    "english": "Sisters",
+    "color": "assets/guides-color-clean/bluey10.png",
+    "outline": "assets/guides-outline-clean/bluey10.png"
+  },
+  {
+    "id": "bluey11",
+    "series": "bluey",
+    "name": "父女合照",
+    "english": "Father and Daughter",
+    "color": "assets/guides-color-clean/bluey11.png",
+    "outline": "assets/guides-outline-clean/bluey11.png"
+  },
+  {
+    "id": "bluey12",
+    "series": "bluey",
+    "name": "布麗與四位朋友",
+    "english": "Bluey with Friends",
+    "color": "assets/guides-color-clean/bluey12.png",
+    "outline": "assets/guides-outline-clean/bluey12.png"
+  },
+  {
+    "id": "bluey13",
+    "series": "bluey",
+    "name": "布麗賓果與四位朋友",
+    "english": "Bluey Bingo and Friends",
+    "color": "assets/guides-color-clean/bluey13.png",
+    "outline": "assets/guides-outline-clean/bluey13.png"
+  }
+]
