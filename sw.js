@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kids-drawing-v1-8-72-cleanup-20261107';
+const CACHE_NAME = 'kids-drawing-v1-8-73-fullscreen-tool-layout-20261108';
 
 const CORE_ASSETS = [
   './',

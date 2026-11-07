@@ -2603,3 +2603,35 @@ body:not(.draw-focus-mode) #fullscreenPaletteToggle{display:none!important;}
 
 /* V1.8.64: four visual series in the home landing area */
 .anime-entry-pictures{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px}.anime-entry-pictures img{object-fit:contain;max-width:23%;max-height:125px}.anime-entry-copy .primary-btn{margin:3px 5px 3px 0}.game-art-series-tabs{display:flex;gap:8px;flex-wrap:wrap}
+
+
+/* V1.8.73: Keep the fullscreen quick icons and the original palette rail apart.
+   The compact dock is 80px high at top:76px; leave at least 16px below it.
+   Retain the legacy rail so the complete tool selector remains accessible. */
+@media (min-width:651px) {
+  body.draw-focus-mode .draw-fullscreen-shell #paletteDock,
+  body.draw-focus-mode .workspace-card.draw-focus-fullscreen #paletteDock {
+    top:178px!important;
+    left:max(8px, env(safe-area-inset-left))!important;
+    right:auto!important;
+    max-height:calc(100dvh - 192px)!important;
+  }
+  body.draw-focus-mode #compactPainterToolsV1862.is-fullscreen {
+    top:76px!important;
+    left:max(12px, env(safe-area-inset-left))!important;
+  }
+}
+/* On phones the compact icons are at the BOTTOM, so the palette rail
+   remains near the top, never competing with the compact dock. */
+@media (max-width:650px) {
+  body.draw-focus-mode .draw-fullscreen-shell #paletteDock,
+  body.draw-focus-mode .workspace-card.draw-focus-fullscreen #paletteDock {
+    top:74px!important;
+    max-height:calc(100dvh - 245px)!important;
+  }
+}
+/* Avoid having two separate brush/palette button pairs in fullscreen. */
+body.draw-focus-mode #fullscreenBrushToggle,
+body.draw-focus-mode #fullscreenPaletteToggle {
+  display:none!important;
+}
