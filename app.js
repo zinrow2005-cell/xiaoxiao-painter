@@ -1470,17 +1470,16 @@ function protectDrawingSurface(el){
   if(!el)return;
   ['selectstart','dragstart','dblclick','contextmenu'].forEach(type=>el.addEventListener(type,e=>{e.preventDefault();clearBrowserSelection()},{capture:true}));
   el.addEventListener('pointerdown',()=>clearBrowserSelection(),{capture:true});
-  el.addEventListener('gesturestart',e=>{e.preventDefault?.()},{capture:true});
 }
 protectDrawingSurface($('#canvasWrap'));
 protectDrawingSurface($('.practice-wrap'));
 
 function fullscreenSelectionGuard(e){
   if(!drawFocusMode)return;
-  if(['selectstart','dragstart','dblclick','contextmenu','gesturestart','gesturechange'].includes(e.type))e.preventDefault();
+  if(['selectstart','dragstart','dblclick','contextmenu'].includes(e.type))e.preventDefault();
   clearBrowserSelection();
 }
-['selectstart','dragstart','dblclick','contextmenu','gesturestart','gesturechange'].forEach(type=>document.addEventListener(type,fullscreenSelectionGuard,{capture:true,passive:false}));
+['selectstart','dragstart','dblclick','contextmenu'].forEach(type=>document.addEventListener(type,fullscreenSelectionGuard,{capture:true,passive:false}));
 document.addEventListener('selectionchange',()=>{if(drawFocusMode)clearBrowserSelection()});
 document.addEventListener('pointerdown',()=>{if(drawFocusMode)clearBrowserSelection()},{capture:true});
 document.addEventListener('pointerup',()=>{if(drawFocusMode)clearBrowserSelection()},{capture:true});
@@ -1488,12 +1487,12 @@ document.addEventListener('pointerup',()=>{if(drawFocusMode)clearBrowserSelectio
 
 // V1.7.43｜全系統全面防選取：不只全螢幕，所有頁面都禁止文字反白/圖片拖曳/長按選取。
 function globalNoSelectionGuard(e){
-  if(['selectstart','dragstart','dblclick','contextmenu','gesturestart','gesturechange'].includes(e.type)){
+  if(['selectstart','dragstart','dblclick','contextmenu'].includes(e.type)){
     e.preventDefault();
   }
   clearBrowserSelection();
 }
-['selectstart','dragstart','dblclick','contextmenu','gesturestart','gesturechange'].forEach(type=>{
+['selectstart','dragstart','dblclick','contextmenu'].forEach(type=>{
   document.addEventListener(type,globalNoSelectionGuard,{capture:true,passive:false});
 });
 document.addEventListener('selectionchange',clearBrowserSelection,{capture:true});
