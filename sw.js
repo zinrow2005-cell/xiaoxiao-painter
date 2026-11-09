@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kids-drawing-v1-8-74-fullscreen-tool-layout-20261108';
+const CACHE_NAME = 'kids-drawing-v1-8-77-tablet-guide-ratio';
 
 const CORE_ASSETS = [
   './',

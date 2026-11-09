@@ -1884,9 +1884,9 @@ async function saveWork(){
   workSaving=true;
   const btn=$('#saveBtn');if(btn)btn.disabled=true;
   const savedTemplate=state.current;
-  let image=null,savedInDb=false;
+  let image=null,savedInDb=false,captured=null,unsavedRecord=null;
   try{
-    const captured=captureEditableWork(); // Snapshot BEFORE first await; keep all editable layers unchanged.
+    captured=captureEditableWork(); // Snapshot BEFORE first await; keep all editable layers unchanged.
     // Gallery PNG at native canvas resolution; 2x printable artwork is still available via export.
     // This reduces storage significantly without compromising editable PNG layers.
     image=await renderCapturedWork(captured,1);
@@ -1894,6 +1894,7 @@ async function saveWork(){
       lv:savedTemplate.lv,created:new Date().toISOString(),traceCompleted:state.traceCompleted.size,
       traceTotal:state.traceSteps.length,traceRating:traceRatingValue(),image,editable:captured};
     if(state.current?.id!==savedTemplate.id){toast('已切換圖案，請回到原圖重新儲存');return;}
+    unsavedRecord=data;
     const d=await db();
     try{
       const tx=d.transaction('works','readwrite');
@@ -1901,6 +1902,31 @@ async function saveWork(){
       await new Promise((r,j)=>{tx.oncomplete=()=>r();tx.onerror=()=>j(tx.error||new Error('寫入失敗'));tx.onabort=()=>j(tx.error||new Error('交易中止'))});
       savedInDb=true;
     }finally{d.close()}
+    // V1.8.75: verify the committed work can be read before announcing success.
+    // A readback error is handled separately: the write may already be durable.
+    let verified=false;
+    try{
+      const verifyDb=await db();
+      try{
+        const stored=await new Promise((resolve,reject)=>{
+          const req=verifyDb.transaction('works','readonly').objectStore('works').get(data.id);
+          req.onsuccess=()=>resolve(req.result);
+          req.onerror=()=>reject(req.error||new Error('讀回失敗'));
+        });
+        verified=!!stored&&stored.templateId===data.templateId&&stored.image===data.image&&
+          stored.editable?.pixels?.length===data.editable.pixels.length&&
+          stored.editable.pixels.every((px,i)=>px===data.editable.pixels[i])&&
+          stored.editable.activeLayer===data.editable.activeLayer;
+      }finally{verifyDb.close()}
+    }catch(readError){
+      console.warn('作品寫入已提交，但讀回確認失敗',readError);
+      toast('作品已寫入，但無法確認讀回；請到作品集查看並備份');
+      return;
+    }
+    if(!verified){
+      toast('作品寫入後讀回不一致，請到作品集檢查，並先備份畫作');
+      return;
+    }
     // A secondary progress/star preference failure must not misreport a successful artwork save.
     let earned=0;
     try{
@@ -1923,14 +1949,24 @@ async function saveWork(){
     if(savedInDb){toast('作品已收藏，但獎勵畫面發生錯誤；請到作品集查看');return;}
     const reason=saveWorkErrorText(e);
     toast(reason+'，尚未收藏');
-    // Never destroy data or remove prior works to recover space.
-    // Explicit rescue download retains at least the picture if IndexedDB cannot persist it.
-    if(image&&window.confirm(reason+'。\n這張作品尚未存入收藏。\n是否立即下載 PNG 圖檔備份？\n（請勿關閉或重新整理頁面，直到確認檔案下載成功。）')){
+    // Never delete earlier works to recover space. Rescue full editable layers, not just a flattened PNG.
+    // This uses the SAME validated JSON format as the existing '作品備份匯入' feature.
+    if(unsavedRecord&&window.confirm(reason+'。\n這張作品尚未收藏。\n要下載「可編輯作品備援 JSON」嗎？\n稍後可到「我的作品」→「匯入備份」還原圖層。')){
       try{
-        const blob=await (await fetch(image)).blob();
-        backupDownload(blob,'小小畫家_未儲存作品_'+savedTemplate.zh+'_'+Date.now()+'.png');
-        toast('已要求下載 PNG，請確認下載項目');
-      }catch(downloadError){console.error('備援下載失敗',downloadError);toast('下載失敗，請保持畫面並截圖備份')}
+        const payload={format:'kids-drawing-works-backup',version:1,createdAt:new Date().toISOString(),
+          source:'小小畫家・儲存失敗緊急備援',workCount:1,works:[unsavedRecord]};
+        validateBackupWork(unsavedRecord);
+        const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+        if(blob.size>250*1024*1024)throw new Error('備援檔超過 250 MB');
+        backupDownload(blob,'小小畫家_可編輯作品緊急備份_'+savedTemplate.zh+'_'+Date.now()+'.json');
+        toast('已要求下載可編輯備份，請確認檔案確實儲存成功');
+      }catch(rescueError){console.error('可編輯備份建立失敗',rescueError);toast('可編輯備份失敗，請保留畫板並另存圖片')}
+    }
+    if(image&&window.confirm('是否另外下載 PNG 圖片備份？')){
+      try{
+        backupDownload(dataUrlToBlob(image),'小小畫家_未儲存圖片_'+savedTemplate.zh+'_'+Date.now()+'.png');
+        toast('已要求下載 PNG，請確認檔案確實存在');
+      }catch(downloadError){console.error('PNG 備援下載失敗',downloadError);toast('下載失敗，請保持畫面並截圖備份')}
     }
   }finally{workSaving=false;if(btn)btn.disabled=false}
 }
@@ -2017,7 +2053,16 @@ async function continueEditingWork(work){
   toast('已還原完整圖層，可繼續編輯；再次儲存會另存新作品');
 }
 
-async function allWorks(){try{const d=await db();return await new Promise((r,j)=>{const q=d.transaction('works').objectStore('works').getAll();q.onsuccess=()=>r(q.result.sort((a,b)=>b.id-a.id));q.onerror=()=>j(q.error)})}catch{return[]}}
+// V1.8.76: a database failure is not an empty gallery. Surface it instead of hiding existing works.
+async function allWorks(){
+  const d=await db();
+  try{return await new Promise((resolve,reject)=>{
+    const tx=d.transaction('works','readonly'),req=tx.objectStore('works').getAll();
+    req.onsuccess=()=>resolve(req.result.sort((a,b)=>b.id-a.id));
+    req.onerror=()=>reject(req.error||new Error('作品集讀取失敗'));
+    tx.onabort=()=>reject(tx.error||new Error('作品集讀取中止'));
+  })}finally{d.close()}
+}
 // V1.8.41: Validated, additive manual backups with repeat-import protection.
 const WORK_BACKUP_FORMAT='kids-drawing-works-backup';
 const WORK_BACKUP_VERSION=1;
@@ -2068,12 +2113,13 @@ function backupDownload(blob,filename){
 }
 function backupStatus(message,isError=false){const el=$('#worksBackupStatus');if(el){el.textContent=message;el.classList.toggle('error',isError)}}
 async function getAllWorksForBackup(){
-  // Unlike allWorks(), errors must propagate; a DB failure is NOT an empty collection.
   const d=await db();
-  return new Promise((resolve,reject)=>{
-    const req=d.transaction('works','readonly').objectStore('works').getAll();
-    req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('作品資料庫讀取失敗'));
-  });
+  try{return await new Promise((resolve,reject)=>{
+    const tx=d.transaction('works','readonly'),req=tx.objectStore('works').getAll();
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error||new Error('作品資料庫讀取失敗'));
+    tx.onabort=()=>reject(tx.error||new Error('作品資料庫交易中止'));
+  })}finally{d.close()}
 }
 function backupImageIdentity(w){
   // A compact, deterministic provenance tag for repeat imports of the same backup.
@@ -2148,7 +2194,17 @@ function initWorksBackup(){
 }
 initWorksBackup();
 
-async function deleteWork(id){const d=await db(),tx=d.transaction('works','readwrite');tx.objectStore('works').delete(id);return new Promise(r=>tx.oncomplete=r)}
+// V1.8.76: commit confirmation is required before removing an item from the UI.
+async function deleteWork(id){
+  const d=await db();
+  try{await new Promise((resolve,reject)=>{
+    const tx=d.transaction('works','readwrite');
+    tx.objectStore('works').delete(id);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error||new Error('刪除交易失敗'));
+    tx.onabort=()=>reject(tx.error||new Error('刪除交易中止'));
+  })}finally{d.close()}
+}
 function dataUrlToBlob(dataUrl){
   const parts=String(dataUrl).split(','),meta=parts[0]||'',raw=atob(parts[1]||''),mime=(meta.match(/data:([^;]+)/)||[])[1]||'image/png',bytes=new Uint8Array(raw.length);
   for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
@@ -2162,14 +2218,29 @@ async function exportWorkImage(w){
   const a=document.createElement('a');a.href=w.image;a.download=filename;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
 }
 async function renderGallery(){
-  const works=await allWorks();$('#emptyGallery').style.display=works.length?'none':'grid';const levels=new Set(works.map(w=>w.lv));const stars=getStars();$('#gallerySummary').textContent=works.length?`已收藏 ${works.length} 張作品・挑戰 ${levels.size} 個等級・累積 ⭐ ${stars}`:'第一張作品，從今天開始收藏。';
+  let works;
+  try{works=await allWorks()}
+  catch(error){
+    console.error('作品集讀取失敗，未清除任何既有資料',error);
+    $('#emptyGallery').style.display='none';
+    $('#gallerySummary').textContent='⚠️ 作品集暫時無法讀取，請勿清除網站資料或重新匯入覆蓋。原有作品不代表已消失。';
+    toast('無法讀取作品資料庫，請保留原有瀏覽器資料');
+    return;
+  }
+  $('#emptyGallery').style.display=works.length?'none':'grid';const levels=new Set(works.map(w=>w.lv));const stars=getStars();$('#gallerySummary').textContent=works.length?`已收藏 ${works.length} 張作品・挑戰 ${levels.size} 個等級・累積 ⭐ ${stars}`:'第一張作品，從今天開始收藏。';
   if($('#galleryWorksCount'))$('#galleryWorksCount').textContent=works.length;
   if($('#galleryLevelsCount'))$('#galleryLevelsCount').textContent=levels.size;
   if($('#galleryStarsCount'))$('#galleryStarsCount').textContent=stars;
   $('#galleryGrid').innerHTML=works.map(w=>`<article class="gallery-item"><div class="gallery-frame"><img src="${w.image}" alt="${w.title}"><span class="gallery-lv-badge">LV${w.lv}</span></div><div class="gallery-body"><strong>${w.title}</strong><small class="gallery-date">📅 ${new Date(w.created).toLocaleString('zh-TW')}</small>${w.traceTotal?`<small class="template-progress">🧭 描圖 ${w.traceCompleted||0}/${w.traceTotal}${w.traceRating?`・${'⭐'.repeat(w.traceRating)}${'☆'.repeat(3-w.traceRating)}`:''}</small>`:''}<div class="gallery-actions">${w.editable?.pixels?.length?`<button class="gallery-edit" data-edit="${w.id}">🖍️ 繼續編輯</button>`:''}<button class="gallery-download" data-download="${w.id}">${isIOSLike()?'📤 分享／儲存':'⬇️ 下載 PNG'}</button><button class="gallery-delete" data-delete="${w.id}">🗑️ 刪除</button></div></div></article>`).join('');
   $$('[data-edit]').forEach(b=>b.onclick=async()=>{const w=works.find(x=>x.id===+b.dataset.edit);try{await continueEditingWork(w)}catch(e){console.error(e);toast('無法還原圖層，原作品仍安全保留')}});
   $$('[data-download]').forEach(b=>b.onclick=async()=>{const w=works.find(x=>x.id===+b.dataset.download);await exportWorkImage(w)});
-  $$('[data-delete]').forEach(b=>b.onclick=async()=>{if(confirm('要刪除這張作品嗎？')){await deleteWork(+b.dataset.delete);renderGallery()}});
+  $$('[data-delete]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('要刪除這張作品嗎？此操作不能復原，建議先匯出備份。'))return;
+    b.disabled=true;
+    try{await deleteWork(+b.dataset.delete);await renderGallery();toast('作品已刪除')}
+    catch(err){console.error('刪除未完成',err);toast('刪除失敗，原有資料可能仍在，請重新確認作品集')}
+    finally{b.disabled=false}
+  });
 }
 function showStepFlash(){const o=$('#stepFlash');if(!o)return;o.classList.remove('show');void o.offsetWidth;o.classList.add('show');o.setAttribute('aria-hidden','false');setTimeout(()=>{o.classList.remove('show');o.setAttribute('aria-hidden','true')},900)}
 function showTraceComplete(stars){$('#rewardText').textContent=`描圖完成・${'⭐'.repeat(stars)}${'☆'.repeat(3-stars)}`;const o=$('#rewardOverlay');o.querySelector('strong').textContent='描圖挑戰完成！';o.classList.add('show');o.setAttribute('aria-hidden','false');setTimeout(()=>{o.classList.remove('show');o.setAttribute('aria-hidden','true');o.querySelector('strong').textContent='完成一張！'},1500)}
@@ -2204,7 +2275,9 @@ function updateSampleReference(){
 }
 
 async function openParent(){
-  const works=await allWorks();
+  let works=[];
+  try{works=await allWorks()}
+  catch(error){console.error('家長頁讀取作品失敗',error);toast('作品統計暫時無法讀取，請勿清除瀏覽器資料');return;}
   $('#parentWorks').textContent=works.length;
   $('#parentLevels').textContent=new Set(works.map(w=>w.lv)).size;
   updateStarUI();
@@ -2547,11 +2620,28 @@ let holdTimer=null;const parentBtn=$('#parentBtn');const beginHold=e=>{e.prevent
 $('#closeParentBtn').onclick=closeParent;$('#closeParentBottomBtn').onclick=closeParent;$('#parentModal').onclick=e=>{if(e.target===$('#parentModal'))closeParent()};
 
 window.addEventListener('keydown',e=>{if(e.key==='Escape'){const cw=$('#colorWheelPopover');if(cw&&!cw.hidden){closeColorWheel(false);return}if(drawFocusMode)exitDrawFullscreen()}});
-let resizeTimer;const scheduleResponsiveCanvasResize=()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(async()=>{if(!$('#drawView').classList.contains('active'))return;if(drawFocusMode&&focusLearningPane==='draw')fitFullscreenCanvasBox();if(!drawFocusMode||focusLearningPane==='draw')await resizeMainCanvases(true);if(!drawFocusMode||focusLearningPane==='practice'){await resizePracticeCanvases(true);drawPracticeGuide()}},180)};window.addEventListener('resize',scheduleResponsiveCanvasResize);window.addEventListener('orientationchange',()=>setTimeout(scheduleResponsiveCanvasResize,180));if(window.visualViewport)window.visualViewport.addEventListener('resize',scheduleResponsiveCanvasResize);
+let resizeTimer;const scheduleResponsiveCanvasResize=()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(async()=>{if(!$('#drawView').classList.contains('active'))return;if(drawFocusMode&&focusLearningPane==='draw')fitFullscreenCanvasBox();if(!drawFocusMode||focusLearningPane==='draw')await resizeMainCanvases(true);if(!drawFocusMode||focusLearningPane==='practice'){await resizePracticeCanvases(true);drawPracticeGuide()}},180)};window.addEventListener('resize',scheduleResponsiveCanvasResize);window.addEventListener('orientationchange',()=>setTimeout(scheduleResponsiveCanvasResize,180));
+// V1.8.77: Observe layout-size changes on tablets (including opening guide details),
+// not only viewport resize. The resizer guards equal sizes and preserves strokes.
+if(typeof ResizeObserver==='function'){
+  const wrapForResize=$('#canvasWrap');
+  let lastBoxW=0,lastBoxH=0;
+  const canvasLayoutObserver=new ResizeObserver(entries=>{
+    if(!$('#drawView').classList.contains('active'))return;
+    const rect=entries[0]?.contentRect;
+    if(!rect || rect.width<2 || rect.height<2)return;
+    const w=Math.round(rect.width),h=Math.round(rect.height);
+    if(Math.abs(w-lastBoxW)<2&&Math.abs(h-lastBoxH)<2)return;
+    lastBoxW=w;lastBoxH=h;
+    scheduleResponsiveCanvasResize();
+  });
+  if(wrapForResize)canvasLayoutObserver.observe(wrapForResize);
+}
+if(window.visualViewport)window.visualViewport.addEventListener('resize',scheduleResponsiveCanvasResize);
 if('serviceWorker' in navigator){
   window.addEventListener('load',async()=>{
     try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=1.8.69',{updateViaCache:'none'});
+      const reg=await navigator.serviceWorker.register('./sw.js?v=1.8.77',{updateViaCache:'none'});
       await reg.update();
     }catch(e){console.warn('Service Worker update failed',e);}
   });
