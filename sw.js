@@ -1,9 +1,10 @@
-const CACHE_NAME = 'kids-drawing-v1-8-77-tablet-guide-ratio';
+const CACHE_NAME = 'kids-drawing-v1-8-78-tablet-dialog';
 
 const CORE_ASSETS = [
   './',
   './index.html',
   './styles.bundle.css',
+  './tablet-guide-v1878.js',
   './ui-v1863.js',
   './character-series-nav.js',
   './character-print.html',

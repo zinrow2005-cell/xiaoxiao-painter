@@ -2738,3 +2738,49 @@ body.draw-focus-mode #fullscreenPaletteToggle {
     overflow:hidden!important;flex-shrink:0!important;
   }
 }
+
+
+/* V1.8.78 | iPad guide controls in viewport instead of narrow 50%-column. */
+#tabletGuideOverlay1878[hidden]{display:none!important}
+#tabletGuideOverlay1878{
+ position:fixed!important;inset:0!important;z-index:2147483300!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;padding:calc(18px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left))!important;
+ background:rgba(29,33,42,.34)!important;overflow:hidden!important;
+}
+#tabletGuideOverlay1878 .tablet-guide-dialog{
+ display:flex!important;flex-direction:column!important;box-sizing:border-box!important;
+ width:min(560px,100%)!important;max-width:100%!important;max-height:min(700px,calc(100dvh - 36px))!important;
+ min-width:0!important;overflow:hidden!important;border:1px solid #ebd2b7!important;
+ border-radius:22px!important;background:#fffaf2!important;
+ box-shadow:0 20px 60px rgba(55,43,31,.24)!important;
+}
+#tabletGuideOverlay1878 .tablet-guide-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;
+ min-height:58px!important;box-sizing:border-box!important;padding:12px 16px!important;
+ border-bottom:1px solid #f0dec9!important;font-size:17px!important;color:#68452d!important;
+}
+#tabletGuideOverlay1878 .tablet-guide-head button{
+ flex:0 0 auto!important;min-width:82px!important;min-height:42px!important;
+ border-radius:12px!important;border:1px solid #ecc5a9!important;background:#fff0e3!important;
+ color:#814729!important;font-weight:800!important;padding:8px 12px!important;
+}
+#tabletGuideOverlay1878 .tablet-guide-host{
+ box-sizing:border-box!important;display:block!important;width:100%!important;min-width:0!important;
+ padding:16px!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;
+}
+#tabletGuideOverlay1878 .guide-style-panel{
+ position:static!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ gap:16px!important;box-sizing:border-box!important;min-width:0!important;width:100%!important;max-width:100%!important;
+ margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;
+}
+#tabletGuideOverlay1878 .guide-style-copy,
+#tabletGuideOverlay1878 .guide-controls{display:grid!important;gap:10px!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+#tabletGuideOverlay1878 .guide-style-note,#tabletGuideOverlay1878 .outline-pin-label{white-space:normal!important;overflow-wrap:anywhere!important;}
+#tabletGuideOverlay1878 .guide-style-tabs{width:100%!important;min-width:0!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;}
+#tabletGuideOverlay1878 .guide-style-btn{min-width:0!important;min-height:44px!important;white-space:normal!important;}
+#tabletGuideOverlay1878 .outline-pin-control{width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+#tabletGuideOverlay1878 .outline-pin-label{min-width:0!important;}
+#tabletGuideOverlay1878 .guide-opacity-control{width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+#tabletGuideOverlay1878 #guideOpacityRange{width:100%!important;}
+@media(max-height:540px){#tabletGuideOverlay1878{align-items:flex-start!important;}#tabletGuideOverlay1878 .tablet-guide-dialog{max-height:calc(100dvh - 36px)!important;}}

@@ -2641,7 +2641,7 @@ if(window.visualViewport)window.visualViewport.addEventListener('resize',schedul
 if('serviceWorker' in navigator){
   window.addEventListener('load',async()=>{
     try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=1.8.77',{updateViaCache:'none'});
+      const reg=await navigator.serviceWorker.register('./sw.js?v=1.8.78',{updateViaCache:'none'});
       await reg.update();
     }catch(e){console.warn('Service Worker update failed',e);}
   });
